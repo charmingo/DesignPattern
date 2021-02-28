@@ -1,12 +1,17 @@
 interface State {
-    public void doAction(Context context);
+    public void doAction();
 }
 
-class StartState implements State {
+class StartState implements State {    
+    private Context context;
     
-    public void doAction(Context context) {
+    public StartState(Context context) {
+        this.context = context;
+    }
+    
+    public void doAction() {
         System.out.println("Player is in start state");
-        context.setState(new StopState());
+        context.changeToStopState();
     }
     
     public String toString(){
@@ -15,10 +20,15 @@ class StartState implements State {
 }
 
 class StopState implements State {
+    private Context context;
     
-    public void doAction(Context context) {
+    public StopState(Context context) {
+        this.context = context;
+    }
+    
+    public void doAction() {
         System.out.println("Player is in stop state");
-        context.setState(new StartState());	
+        context.changeToStartState();	
     }
     
     public String toString(){
@@ -27,11 +37,13 @@ class StopState implements State {
 }
 
 class Context {
-    private State startState = new StartState();
-    private State stopState = new StopState();
+    private State startState;
+    private State stopState;
     private State state;
     
     public Context(){
+        startState = new StartState(this);
+        stopState = new StopState(this);
         state = startState;
     }
     
@@ -39,12 +51,20 @@ class Context {
         this.state = state;	
     }
     
-    public State getState(){
+    public void changeToStartState() {
+        state = startState;
+    }
+
+    public void changeToStopState() {
+        state = stopState;
+    }
+    
+    public State getState() {
         return state;
     }
     
     public void doAction() {
-        state.doAction(this);
+        state.doAction();
     }
 }
 
