@@ -29,8 +29,53 @@
   * 2. 因为不能使用new关键字构建对象，所以我们需要暴露一个方法给外部，作为单例对象与外界沟通的唯一方式。使用静态方法是个不错的选择。 
   * 3. 多线程情况下，需要保证对象是单例的。
   */
-  
-// V1:双重检查 + synchronized锁懒汉版
+
+// lazy singleton
+// V1.基本式
+// 创建私有静态成员对象，每次获取时返回此对象。
+public class Solution{
+    private static Solution instance = null;
+    // 1. 私有构造函数
+    private Soltion() {
+    }
+    public static Solution getInstance(){
+        if (instance == null) {
+            instance = new Solution();
+        }
+        return instance;
+    }
+}
+
+// V2.静态内部类版
+public class Solution{
+    private Soltion() {
+    }
+    static class lazySolution{
+        static final Solution instance = new Sotluion();
+    }
+    
+    public static Solution getInstance(){
+        return lazySolution.instance;
+    }    
+}
+
+
+// lazy singleton
+// 线程安全式
+// V1
+public class Solution{
+    private static Solution instance = null;
+    private Soltion() {
+    }
+    public static synchronized Solution getInstance(){
+        if (instance == null) {
+            instance = new Solution();
+        }
+        return instance;
+    }
+}
+
+// V2:双重检查 + synchronized锁懒汉版
 public class Solution{
     
     // 1. 私有单例对象，禁止通过 类名.属性 访问
@@ -39,8 +84,7 @@ public class Solution{
     private static volatile Solution instance;
     
     // 1. 私有构造函数
-    private Soltion(){
-        
+    private Soltion(){        
     }
     
     // 静态方法，返回单例对象。双重检查+synchroinzed锁，保证多线程下instance对象唯一
@@ -53,41 +97,23 @@ public class Solution{
                 }
             }
         }
-        return instance;
-            
+        return instance;            
     }
-}
-// V2: 静态内部类版
-public class Solution{
-    
-    static class InnerClass{
-        private static Solution instance = new Sotluion();
-    }
-    
-    public static Solution getInstance(){
-        return Solution.instance;
-    }
-    
 }
 
-// V2 创建私有静态成员对象，每次获取时返回此对象。
-class Solution {
-    /**
-     * @return: The same instance of this class every time
-     */
-    public static Solution instance = null;
-    public static Solution getInstance() {
-        if (instance == null) {
-            instance = new Solution();
-        }
+// hungry singleton
+public class HungrySingleton {
+    private static final HungrySingleton instance = new HungrySingleton();
+    private HungrySingleton() {
+    }
+    public static HungrySingleton getInstance() {
         return instance;
     }
 }
 
-// V3: 枚举类版
+// 枚举类版
 public enum Solution{
-    INSTANCE;
-    
+    INSTANCE;    
     public static Solutin getInstance(){
         return Solution.INSTANCE;
     }
