@@ -30,23 +30,37 @@
   * 3. 多线程情况下，需要保证对象是单例的。
   */
 
+// 1.
+// hungry singleton
+// Eager initialization
+public class HungrySingleton {
+    private static final HungrySingleton instance = new HungrySingleton();
+    private HungrySingleton() {
+    }
+    public static HungrySingleton getInstance() {
+        return instance;
+    }
+}
+
+// 2.
 // lazy singleton
 // V1.基本式
 // 创建私有静态成员对象，每次获取时返回此对象。
-public class Solution{
-    private static Solution instance = null;
+public class Singleton{
+    private static Singleton instance = null;
     // 1. 私有构造函数
-    private Soltion() {
+    private Singleton() {
     }
-    public static Solution getInstance(){
+    public static Singleton getInstance(){
         if (instance == null) {
-            instance = new Solution();
+            instance = new Singleton();
         }
         return instance;
     }
 }
 
-// V2.静态内部类版
+// 3.
+// V2.静态内部类版 static inner class
 public class Solution{
     private Soltion() {
     }
@@ -59,41 +73,43 @@ public class Solution{
     }    
 }
 
-
+// 4.
 // lazy singleton
-// 线程安全式
+// 线程安全式 Thread safe 
 // V1
-public class Solution{
-    private static Solution instance = null;
-    private Soltion() {
+public class Singleton{
+    private static Singleton instance = null;
+    private Singleton() {
     }
-    public static synchronized Solution getInstance(){
+    public static synchronized Singleton getInstance(){
         if (instance == null) {
-            instance = new Solution();
+            instance = new Singleton();
         }
         return instance;
     }
 }
 
+// 5.
+// Double checked locking 
 // V2:双重检查 + synchronized锁懒汉版
-public class Solution{
+public class Singleton{
     
     // 1. 私有单例对象，禁止通过 类名.属性 访问
     // 2. 将其声明为静态成员，使得在静态方法中得以访问
     // 3. 使用volatile关键字，消除指令重排序的影响
-    private static volatile Solution instance;
+    private static volatile Singleton instance;
     
     // 1. 私有构造函数
-    private Soltion(){        
+    private Singleton(){        
     }
     
     // 静态方法，返回单例对象。双重检查+synchroinzed锁，保证多线程下instance对象唯一
-    public static Solution getInstance(){
+    public static Singleton getInstance(){
         if(instance == null){
-            synchronized(Solution.class){
+            synchronized(Singleton.class){
                 if(instance == null){
                     // 多线程并发访问，只会有一个线程初始化成功
-                    instance = new Soltion();
+                    instance = new Singleton();
                 }
             }
         }
@@ -101,16 +117,7 @@ public class Solution{
     }
 }
 
-// hungry singleton
-public class HungrySingleton {
-    private static final HungrySingleton instance = new HungrySingleton();
-    private HungrySingleton() {
-    }
-    public static HungrySingleton getInstance() {
-        return instance;
-    }
-}
-
+// 6.
 // 枚举类版
 public enum Solution{
     INSTANCE;    
